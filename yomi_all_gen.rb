@@ -66,9 +66,13 @@ def generate(yomi)
   rest_result = generate(rest)
   result = rest_result.map { |x| decided + x }
   if vow == 'o'
-    # todo 'h'
     result += rest_result.map { |x| decided + 'ウ' + x }
     result += rest_result.map { |x| decided + 'オ' + x } if pre.empty?
+    if rest[0] == 'h'
+      rest_result = generate(rest[1..-1])
+      result += rest_result.map { |x| decided + 'ウ' + x }
+      result += rest_result.map { |x| decided + 'オ' + x } if pre.empty?
+    end
   end
 
   return result
