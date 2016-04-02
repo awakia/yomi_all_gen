@@ -67,6 +67,8 @@ def generate(yomi, vowel_sep=/[aiueon]/)
     decided = ''
     rest_result = generate(vow + rest, /[aiueo]/)
     result += rest_result.map { |x| decided + x }
+  elsif vow == 'u'
+    result += rest_result.map { |x| decided + 'ウ' + x } unless pre.empty?
   elsif vow == 'o'
     result += rest_result.map { |x| decided + 'ウ' + x }
     result += rest_result.map { |x| decided + 'オ' + x } if pre.empty?
@@ -93,3 +95,7 @@ p generate('nnn')
 p generate('nnnn')
 p generate('no')
 p generate('hanyu')
+p generate('u')
+p generate('yu')
+p generate('yuko')
+
