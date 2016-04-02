@@ -47,25 +47,27 @@ ROMAJI2KANA = {
   "lya"=>"リャ", "lyi"=>"リィ", "lyu"=>"リュ", "lye"=>"リェ", "lyo"=>"リョ"
 }
 
-VOWELS = /[aiueo]/
 
-
-def generate(yomi)
+def generate(yomi, vowel_sep=/[aiueon]/)
   return [''] if yomi.empty?
 
   # parse to vowel
-  pre, vow, rest = yomi.partition(VOWELS)
+  pre, vow, rest = yomi.partition(vowel_sep)
   decided = ROMAJI2KANA[pre + vow]
   if !decided && pre[0] == pre[1] && sub = ROMAJI2KANA[pre[1..-1] + vow]
     decided = 'ッ' + sub
   end
-  return [] unless decided
 
-  # todo 'n'
+  return [] unless decided
 
   rest_result = generate(rest)
   result = rest_result.map { |x| decided + x }
-  if vow == 'o'
+
+  if vow == 'n' && rest[0]
+    decided = ''
+    rest_result = generate(vow + rest, /[aiueo]/)
+    result += rest_result.map { |x| decided + x }
+  elsif vow == 'o'
     result += rest_result.map { |x| decided + 'ウ' + x }
     result += rest_result.map { |x| decided + 'オ' + x } if pre.empty?
     if rest[0] == 'h'
@@ -85,3 +87,9 @@ p generate('omi')
 p generate('otto')
 p generate('kohama')
 p generate('kondo')
+p generate('n')
+p generate('nn')
+p generate('nnn')
+p generate('nnnn')
+p generate('no')
+p generate('hanyu')
